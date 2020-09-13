@@ -1,6 +1,6 @@
 # report.py
 #
-# Exercise 2.7 (, 2.6, 2.4)
+# Exercise 2.10 (, 2.7, 2.6, 2.4)
 import sys
 import csv
 
@@ -32,13 +32,33 @@ def read_prices(filename):
     prices = {}
     with open(filename, 'rt') as f:
         rows = csv.reader(f)
-        headers = next(rows)
         for row in rows:
             try:
                 prices[row[0]] = float(row[1])
             except IndexError:
                 print('Warning:', row, 'Invalid row to read')
     return prices
+
+def make_report(portfolio, prices):
+    report = []
+    for item in portfolio:
+        name = item['name']
+        report.append((name, item['shares'], prices[name], prices[name] - item['price']))
+    return report
+
+def compute_gain_loss(report):
+    gain = sum([n_shares*change for name, n_shares, price, change in report])
+    if gain < 0:
+        print (f'Loss: {gain:.2f}')
+    elif gain == 0:
+        print ('No gain or loss')
+    else:
+        print (f'Gain: {gain:.2f}')
+
+def display_report(report):
+    for name, shares, price, change in report:
+        print(f'{name:>10s}{shares:>10d}{price:>10.2f}{change:>10.2f}')
+
 
 portfolio_filename = 'Data/portfolio.csv'
 prices_filename = 'Data/prices.csv'
@@ -48,19 +68,6 @@ if len(sys.argv) == 3:
 
 portfolio = read_portfolio(portfolio_filename)
 prices = read_prices(prices_filename)
-
-total_purchase_price = 0.0
-total_current_price = 0.0
-for item in portfolio:
-    name = item['name']
-    n_shares = item['shares']
-    purchase_price = n_shares * item['price']
-    current_price = purchase_price
-    if name in prices:
-        current_price = n_shares * prices[name]
-    total_purchase_price += purchase_price
-    total_current_price += current_price
-
-print('Total purchase price', total_purchase_price)
-print('Total current price', total_current_price)
-print('Status:', 'Gain' if total_purchase_price < total_current_price else 'Loss')
+report = make_report(portfolio, prices)
+compute_gain_loss(report)
+display_report(report)
