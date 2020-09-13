@@ -35,11 +35,11 @@ def read_prices(filename):
     prices = {}
     with open(filename, 'rt') as f:
         rows = csv.reader(f)
-        for row in rows:
+        for i, row in enumerate(rows, 1):
             try:
                 prices[row[0]] = float(row[1])
             except IndexError:
-                print('Warning:', row, 'Invalid row to read')
+                print('Row',i,': Couldn\'t read: ', row)
     return prices
 
 def make_report(portfolio, prices):
