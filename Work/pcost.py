@@ -1,14 +1,17 @@
 # pcost.py
 #
-# Exercise 1.31 (, 1.30, 1.27)
+# Exercise 1.32 (, 1.31, 1.30, 1.27)
+
+import csv
 
 def portfolio_cost(filename):
     total_cost = 0.0
     with open(filename, 'rt') as f:
-        headers = next(f)
-        for line in f:
+        rows = csv.reader(f)
+        headers = next(rows)
+        for row in rows:
             try:
-                name, n_shares, cost = line.split(',')
+                name, n_shares, cost = row
                 total_cost += int(n_shares) * float(cost)
             except ValueError:
                 print('Error occured.')
