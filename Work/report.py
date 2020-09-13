@@ -55,9 +55,17 @@ def compute_gain_loss(report):
     else:
         print (f'Gain: {gain:.2f}')
 
-def display_report(report):
+def display_report(report, headers):
+    print(get_header_row(headers))
+    print(get_header_separator(headers))
     for name, shares, price, change in report:
-        print(f'{name:>10s}{shares:>10d}{price:>10.2f}{change:>10.2f}')
+        print(f'{name:>10s} {shares:>10d} {price:>10.2f} {change:>10.2f}')
+
+def get_header_row(headers):
+    return ' '.join([f'{item:>10s}' for item in headers])
+
+def get_header_separator(headers):
+    return ' '.join(['-'*10 for _ in headers])
 
 
 portfolio_filename = 'Data/portfolio.csv'
@@ -66,8 +74,10 @@ if len(sys.argv) == 3:
     portfolio_filename = sys.argv[1]
     prices_filename = sys.argv[2]
 
+headers = ('Name', 'Shares', 'Price', 'Change')
+
 portfolio = read_portfolio(portfolio_filename)
 prices = read_prices(prices_filename)
 report = make_report(portfolio, prices)
 compute_gain_loss(report)
-display_report(report)
+display_report(report, headers)
