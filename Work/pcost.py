@@ -11,9 +11,11 @@ def portfolio_cost(filename):
         rows = csv.reader(f)
         headers = next(rows)
         for i, row in enumerate(rows, 1):
+            holding = dict(zip(headers, row))
             try:
-                name, n_shares, cost = row
-                total_cost += int(n_shares) * float(cost)
+                n_shares = int(holding['shares'])
+                cost = float(holding['price'])
+                total_cost += n_shares * cost
             except ValueError:
                 print('Row',i,': Couldn\'t convert: ', row)
     return total_cost
